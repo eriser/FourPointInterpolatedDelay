@@ -22,7 +22,7 @@ public :
     void setFeedback(float feedBack);
     void setWetMix(float wetMix);
     void prepareToPlay();
-    void cookVariables();
+    void setPlayheads();
     float process(float input);
     void resetDelay();
     

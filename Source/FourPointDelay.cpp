@@ -68,7 +68,7 @@ void FourPointDelay::prepareToPlay()
     m_nReadIndex = 0;
 }
 
-void FourPointDelay::cookVariables()
+void FourPointDelay::setPlayheads()
 {
     //set up dry signal output
     m_nDryIndex = m_nWriteIndex - 2;

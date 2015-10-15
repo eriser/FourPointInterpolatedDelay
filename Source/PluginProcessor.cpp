@@ -33,19 +33,17 @@ FourPointDelayAudioProcessor::FourPointDelayAudioProcessor() : m_knob1(0),
     FourPDelayL.setDelayTime(m_sampleRate, m_fDelayTime);
     FourPDelayL.setWetMix(m_fWetLevel);
     FourPDelayL.setFeedback(m_fFeedback);
-    FourPDelayL.cookVariables();
+    FourPDelayL.setPlayheads();
+    
     FourPDelayR = FourPointDelay();
     FourPDelayR.setMaxDelay(m_sampleRate, 1.0);
     FourPDelayR.setDelayTime(m_sampleRate, m_fDelayTime);
     FourPDelayR.setWetMix(m_fWetLevel);
     FourPDelayR.setFeedback(m_fFeedback);
-    FourPDelayR.cookVariables();
+    FourPDelayR.setPlayheads();
     
     m_fRunWindowL = 0;
     m_fRunWindowR = 0;
-    PI = 3.14159265359;
-    m_nCounterL = 0;
-    m_nCounterR = 0;
     //std::cout << "Run Window = " << m_fRunWindow << std::endl;
 }
 
@@ -82,10 +80,12 @@ void FourPointDelayAudioProcessor::setParameter (int index, float newValue)
             //Delay Time Knob
         case knob1Param: m_knob1 = newValue;
            m_fDelayTime = m_knob1;
+            
             FourPDelayL.setDelayTime(m_sampleRate, m_fDelayTime);
-            FourPDelayL.cookVariables();
+            FourPDelayL.setPlayheads();
+            
             FourPDelayR.setDelayTime(m_sampleRate, m_fDelayTime);
-            FourPDelayR.cookVariables();break;
+            FourPDelayR.setPlayheads();break;
             //Feedback Knob
         case knob2Param: m_knob2 = newValue;
             m_fFeedback = m_knob2;
@@ -196,24 +196,25 @@ void FourPointDelayAudioProcessor::changeProgramName (int index, const String& n
 void FourPointDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     m_sampleRate = sampleRate;
+    
     FourPDelayL.setMaxDelay(m_sampleRate, 1.0);
     FourPDelayL.setDelayTime(m_sampleRate, m_fDelayTime);
     FourPDelayL.setWetMix(m_fWetLevel);
     FourPDelayL.setFeedback(m_fFeedback);
     FourPDelayL.prepareToPlay();
-    FourPDelayL.cookVariables();
+    FourPDelayL.setPlayheads();
+    
     FourPDelayR.setMaxDelay(m_sampleRate, 1.0);
     FourPDelayR.setDelayTime(m_sampleRate, m_fDelayTime);
     FourPDelayR.setWetMix(m_fWetLevel);
     FourPDelayR.setFeedback(m_fFeedback);
     FourPDelayR.prepareToPlay();
-    FourPDelayR.cookVariables();
+    FourPDelayR.setPlayheads();
     
     m_fRunWindowL = 0;
     m_fRunWindowR = 0;
-    PI = 3.14159265359;
-    m_nCounterL = 0;
-    m_nCounterR = 0;
+    HanningWindowL.setWindowLength(sampleRate, 1);
+    HanningWindowR.setWindowLength(sampleRate, 1);
     
     //std::cout << "Run Window = " << m_fRunWindow << std::endl;
 }
@@ -240,35 +241,15 @@ void FourPointDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, Midi
             if(channel == 0)
             {
                 channelData[i] = FourPDelayL.process(channelData[i]);
-                if (m_fRunWindowL != 0)
-                {
-                    double multiplier = 0.5 * (1-cos(2*PI*m_nCounterL/m_sampleRate-1));
-                    channelData[i] = channelData[i] * multiplier;
-                    m_nCounterL++;
-                    if (m_nCounterL == m_sampleRate)
-                    {
-                        m_fRunWindowL = 0;
-                        m_nCounterL = 0;
-                    }
+                channelData[i] = HanningWindowL.doHanningWindow(channelData[i], m_fRunWindowL);
                     //std::cout << m_nCounterL << std::endl;
-                }
             }
             
             else if (channel == 1)
             {
                 channelData[i] = FourPDelayR.process(channelData[i]);
-                if (m_fRunWindowR != 0)
-                {
-                    double multiplier = 0.5 * (1-cos(2*PI*m_nCounterR/m_sampleRate-1));
-                    channelData[i] = channelData[i] * multiplier;
-                    m_nCounterR++;
-                    if (m_nCounterR == m_sampleRate)
-                    {
-                        m_fRunWindowR = 0;
-                        m_nCounterR = 0;
-                    }
+                channelData[i] = HanningWindowR.doHanningWindow(channelData[i], m_fRunWindowR);
                     //std::cout << m_nCounterR << std::endl;
-                }
             }
         }
     }

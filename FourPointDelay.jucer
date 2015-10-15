@@ -12,6 +12,9 @@
               jucerVersion="3.2.0">
   <MAINGROUP id="Am2oDe" name="FourPointDelay">
     <GROUP id="{E5C5ACE6-6B7A-E16C-8A47-32A28AA8B00A}" name="Source">
+      <FILE id="nmjD60" name="HanningWindow.cpp" compile="1" resource="0"
+            file="Source/HanningWindow.cpp"/>
+      <FILE id="HvHjIm" name="HanningWindow.h" compile="0" resource="0" file="Source/HanningWindow.h"/>
       <FILE id="TAW5lL" name="FourPointInterpolate.cpp" compile="1" resource="0"
             file="Source/FourPointInterpolate.cpp"/>
       <FILE id="WNLbKB" name="FourPointInterpolate.h" compile="0" resource="0"

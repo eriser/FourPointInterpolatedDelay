@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FourPointDelay.h"
+#include "HanningWindow.h"
 
 
 //==============================================================================
@@ -103,6 +104,10 @@ private:
     
     FourPointDelay FourPDelayL;
     FourPointDelay FourPDelayR;
+    
+    HanningWindow HanningWindowL;
+    HanningWindow HanningWindowR;
+    
     
         
     //==============================================================================
