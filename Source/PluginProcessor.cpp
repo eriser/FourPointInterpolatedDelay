@@ -18,7 +18,9 @@
 //==============================================================================
 FourPointDelayAudioProcessor::FourPointDelayAudioProcessor() : m_knob1(0),
                                                                m_knob2(0),
-                                                               m_knob3(0)
+                                                               m_knob3(0),
+                                                               m_fRunWindowL(0),
+                                                               m_fRunWindowR(0)
 {
     
     m_fFeedback = 0;
@@ -97,8 +99,8 @@ void FourPointDelayAudioProcessor::setParameter (int index, float newValue)
             FourPDelayL.setWetMix(m_fWetLevel);
             FourPDelayR.setWetMix(m_fWetLevel); break;
             //Run Window
-        case runWindowParam: m_fRunWindowL = newValue;
-            m_fRunWindowR = newValue;
+        case runWindowParam: m_fRunWindowL = 1;
+            m_fRunWindowR = 1;
             //std::cout << "Run Window = " << m_fRunWindow << std::endl;
         default: break;
     }
@@ -109,7 +111,7 @@ const String FourPointDelayAudioProcessor::getParameterName (int index)
     switch (index){
         case knob1Param: return "Delay Time";
         case knob2Param: return "Feedback";
-        case knob3Param: return "Wet / Dry";
+        case knob3Param: return "Dry / Wet";
         case runWindowParam: return "Run Window";
         default: return String::empty;
     }
@@ -196,6 +198,9 @@ void FourPointDelayAudioProcessor::changeProgramName (int index, const String& n
 void FourPointDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     m_sampleRate = sampleRate;
+    m_fDelayTime = m_knob1;
+    m_fFeedback = m_knob2;
+    m_fWetLevel = m_knob3;
     
     FourPDelayL.setMaxDelay(m_sampleRate, 1.0);
     FourPDelayL.setDelayTime(m_sampleRate, m_fDelayTime);
@@ -213,8 +218,10 @@ void FourPointDelayAudioProcessor::prepareToPlay (double sampleRate, int samples
     
     m_fRunWindowL = 0;
     m_fRunWindowR = 0;
-    HanningWindowL.setWindowLength(sampleRate, 1);
-    HanningWindowR.setWindowLength(sampleRate, 1);
+    HanningWindowL.setWindowLength(sampleRate, 2);
+    HanningWindowR.setWindowLength(sampleRate, 2);
+    
+    //m_fDelayTimeZ = m_fDelayTime;
     
     //std::cout << "Run Window = " << m_fRunWindow << std::endl;
 }
@@ -236,20 +243,16 @@ void FourPointDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, Midi
         
         for ( int i = 0; i < buffer.getNumSamples(); i++ )
         {
-            
-            
+
             if(channel == 0)
             {
                 channelData[i] = FourPDelayL.process(channelData[i]);
                 channelData[i] = HanningWindowL.doHanningWindow(channelData[i], m_fRunWindowL);
-                    //std::cout << m_nCounterL << std::endl;
             }
-            
-            else if (channel == 1)
+            else if(channel == 1)
             {
                 channelData[i] = FourPDelayR.process(channelData[i]);
                 channelData[i] = HanningWindowR.doHanningWindow(channelData[i], m_fRunWindowR);
-                    //std::cout << m_nCounterR << std::endl;
             }
         }
     }

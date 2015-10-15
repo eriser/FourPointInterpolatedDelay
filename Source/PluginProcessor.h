@@ -91,13 +91,11 @@ private:
     float m_fFeedback;
     float m_fWetLevel;
     
-    float m_fRunWindowL;
-    float m_fRunWindowR;
     
     //for our hanning window
     float PI;
-    int m_nCounterL;
-    int m_nCounterR;
+    float m_fRunWindowL;
+    float m_fRunWindowR;
     
     //for our interpolated delay time
     int m_fDelayTimeZ;

@@ -72,7 +72,7 @@ void FourPointDelayAudioProcessorEditor::paint (Graphics& g)
     //knob text
     g.drawSingleLineText("Delay", 17, 90); //this is knob 1
     g.drawSingleLineText("Feedback", 87, 90); //this is knob 2
-    g.drawSingleLineText("Wet / Dry", 157, 90); //this is knob 3
+    g.drawSingleLineText("Dry / Wet", 157, 90); //this is knob 3
     //top rectangle
     g.fillRoundedRectangle(0,6,295,8,2);
     //lower rectangle & text
