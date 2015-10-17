@@ -220,6 +220,9 @@ void FourPointDelayAudioProcessor::prepareToPlay (double sampleRate, int samples
     m_fRunWindowR = 0;
     HanningWindowL.setWindowLength(sampleRate, 2);
     HanningWindowR.setWindowLength(sampleRate, 2);
+    TukeyWindowL.setWindowLength(sampleRate, .02);
+    TukeyWindowR.setWindowLength(sampleRate, .02);
+    
     
     //m_fDelayTimeZ = m_fDelayTime;
     
@@ -247,12 +250,12 @@ void FourPointDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, Midi
             if(channel == 0)
             {
                 channelData[i] = FourPDelayL.process(channelData[i]);
-                channelData[i] = HanningWindowL.doHanningWindow(channelData[i], m_fRunWindowL);
+                channelData[i] = TukeyWindowL.doTukeyWindow(channelData[i], m_fRunWindowL);
             }
             else if(channel == 1)
             {
                 channelData[i] = FourPDelayR.process(channelData[i]);
-                channelData[i] = HanningWindowR.doHanningWindow(channelData[i], m_fRunWindowR);
+                channelData[i] = TukeyWindowR.doTukeyWindow(channelData[i], m_fRunWindowR);
             }
         }
     }

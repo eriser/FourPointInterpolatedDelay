@@ -12,6 +12,8 @@
               jucerVersion="3.2.0">
   <MAINGROUP id="Am2oDe" name="FourPointDelay">
     <GROUP id="{E5C5ACE6-6B7A-E16C-8A47-32A28AA8B00A}" name="Source">
+      <FILE id="DB05mO" name="TukeyWindow.cpp" compile="1" resource="0" file="Source/TukeyWindow.cpp"/>
+      <FILE id="RUy2l0" name="TukeyWindow.h" compile="0" resource="0" file="Source/TukeyWindow.h"/>
       <FILE id="nmjD60" name="HanningWindow.cpp" compile="1" resource="0"
             file="Source/HanningWindow.cpp"/>
       <FILE id="HvHjIm" name="HanningWindow.h" compile="0" resource="0" file="Source/HanningWindow.h"/>

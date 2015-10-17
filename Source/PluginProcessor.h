@@ -14,6 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FourPointDelay.h"
 #include "HanningWindow.h"
+#include "TukeyWindow.h"
 
 
 //==============================================================================
@@ -105,6 +106,9 @@ private:
     
     HanningWindow HanningWindowL;
     HanningWindow HanningWindowR;
+    
+    TukeyWindow TukeyWindowL;
+    TukeyWindow TukeyWindowR;
     
     
         
